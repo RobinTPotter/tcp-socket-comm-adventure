@@ -46,8 +46,8 @@ class common(abc.ABC):
     def stop(self):
         self.working = False
         self.s.close()
-        self.rthread.join()
         self.cleanup()
+        self.rthread.join()
         print('closed, joined, stopped')
     def sendall(self, msg):
         self.s.sendall(msg)
