@@ -58,12 +58,14 @@ class common(abc.ABC):
 class client(common):    
     def init(self, ip, port):
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.settimeout(0.5)
         self.s.connect((ip,port))
 
 class server(common):    
     def init(self, ip, port):
         if ip==None: ip=''
         self.srv=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.srv.settimeout(0.5)
         self.srv.bind((ip,port))
         self.srv.listen()
         self.s, self.address = self.srv.accept()
