@@ -41,8 +41,8 @@ class common(abc.ABC):
         self.rthread = threading.Thread(None, self.msg_recieved)
         self.rthread.start()
     def msg_recieved(self):
-        r = b''
         while self.working:
+            r = b''
             #print('waitn')
             try:
                 r = self.s.recv(1024)
