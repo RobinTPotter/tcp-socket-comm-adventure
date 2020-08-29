@@ -42,7 +42,10 @@ class common(abc.ABC):
         self.rthread = threading.Thread(None, self.msg_recieved)
         self.rthread.start()
     def msg_recieved(self):
-        while self.working: print(self.s.recv(1024))
+        while self.working:
+            r = self.s.recv(1024)
+            if len(r)==0: self.working = False
+            else: print(r)
     def stop(self):
         self.working = False
         self.s.close()
