@@ -43,13 +43,13 @@ class common(abc.ABC):
     def msg_recieved(self):
         r = b''
         while self.working:
-            print('waitn')
+            #print('waitn')
             try:
                 r = self.s.recv(1024)
             except:
                 pass
-            print('recvd')
-            print(r)
+            # print('recvd')
+            if len(r): print(r)
         print("end")
     def stop(self):
         self.working = False
