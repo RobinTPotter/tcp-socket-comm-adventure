@@ -1,5 +1,4 @@
 # # classy
-# 
 # just been learing about abc, clever if you like that sort of thing
 # common class creates the thread for the receipt of messages to print
 # client overrides the init function to connect the socket s to to a listening "server"
@@ -43,9 +42,14 @@ class common(abc.ABC):
         self.rthread.start()
     def msg_recieved(self):
         while self.working:
-            r = self.s.recv(1024)
-            if len(r)==0: self.working = False
-            else: print(r)
+            print('waitn')
+            try:
+                r = self.s.recv(1024)
+            except:
+                pass
+            print('recvd')
+            print(r)
+        print("end")
     def stop(self):
         self.working = False
         self.s.close()
@@ -58,17 +62,17 @@ class common(abc.ABC):
 class client(common):    
     def init(self, ip, port):
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.settimeout(0.5)
         self.s.connect((ip,port))
+        self.s.setblocking(0)
 
 class server(common):    
     def init(self, ip, port):
         if ip==None: ip=''
         self.srv=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.srv.settimeout(0.5)
         self.srv.bind((ip,port))
         self.srv.listen()
         self.s, self.address = self.srv.accept()
+        self.s.setblocking(0)
     def cleanup(self):
         self.srv.close()
 
