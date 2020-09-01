@@ -1,27 +1,3 @@
-# # classy
-# just been learing about abc, clever if you like that sort of thing
-# common class creates the thread for the receipt of messages to print
-# client overrides the init function to connect the socket s to to a listening "server"
-# server overrides init to create a srv socket (the server),
-# while s represeents the attached client
-# the cleanup function is overridden to allow the srv socket to be closed.
-# 
-# usage:
-# 
-# import client_server
-# s = client_server.server('',12345)
-# # blocks until client attaches
-# s.sendall(b'bollocks')
-# 
-# or:
-# 
-# import client_server
-# c = client_server.client('localhost',12345)
-# c.sendall(b'bollocks')
-
-
-
-
 import socket
 import threading
 import abc
@@ -34,6 +10,7 @@ class common(abc.ABC):
     @abc.abstractmethod
     def init(self, ip, port):
         pass
+    @abc.abstractmethod
     def cleanup(self):
         pass
     def start(self):
@@ -48,9 +25,10 @@ class common(abc.ABC):
                 r = self.s.recv(1024)
             except:
                 pass
-            # print('recvd')
-            if len(r): print(r)
-        print("end")
+            #print('recvd')
+        self.msg_action(r)
+    def msg_action(self,r):
+        if len(r): print(r)
     def stop(self):
         self.working = False
         self.s.close()
