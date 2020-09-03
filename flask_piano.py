@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
 class flask_piano():
@@ -10,17 +10,22 @@ class flask_piano():
         self.socketio.on_event('hello', self.hello)
         self.socketio.on_event('noteon', self.noteon)
         self.socketio.on_event('noteoff', self.noteoff)
-        self.socketio.run(self.app, host='0.0.0.0')
+        self.noteon_callback = None
+        self.noteoff_callback = None
+
+    def run(self, host='0.0.0.0'):
+        self.socketio.run(self.app, host=host)
 
     def hello(self,data):
-        if self.noteon_callback==None: print(data)
-        else: noteon_callback(data)
+        print('hello {}'.format(request.remote_addr))
 
     def noteon(self, data):
-        print(data)
+        if self.noteon_callback==None: print(data)
+        else: self.noteon_callback(data)
 
     def noteoff(self, data):
-        print(data)
+        if self.noteoff_callback==None: print(data)
+        else: self.noteoff_callback(data)
 
     def index(self):
         keycodes = [65,66,67,68,69,70,71,72,73,74,75,76,77]
