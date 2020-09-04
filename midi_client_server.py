@@ -4,36 +4,23 @@ import pickle
 from client_server import client, server
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
+# this then generates (pygame) midi events, can be used as a callback for the flask_piano
 class midigenclient(client):
     def __init__(self, ip, port):
         client.__init__(self, ip, port)
-        self.transpose = 65
-        self.octave = -1
-        self.mthread = Thread(None, self.gomidi)
-        self.mworking = True
-        self.mthread.start()
-        # need to put back all the Input stuff !
-
+        self.transpose = 0
+        self.octave = 0
     def cleanup(self):
         self.working = False
         self.mthread.join()
-
-    def gomidi(self, thing):
-        while self.mworking:
-            for event in pg.event.get():
-                if event.type == pg.KEYDOWN or event.type == pg.KEYUP:
-                    if event.type == pg.KEYDOWN:
-                        if event.key in self.keymap:
-                            self.sendall(pickle.dumps([0x90, self.keymap[event.key] + self.transpose + 12 * self.octave , 100]))
-                    if event.type == pg.KEYUP:
-                        if event.key in self.keymap:
-                            self.sendall(pickle.dumps([0x80, self.keymap[event.key] + self.transpose + 12 * self.octave , 0]))
-                            self.sendall(pickle.dumps([0x90, self.keymap[event.key] + self.transpose + 12 * self.octave , 0]))
-
-
+    def noteon(self, note, vel=100):
+        self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, vel]))
+    def noteoff(self, note):
+        self.sendall(pickle.dumps([0x80, note + self.transpose + 12 * self.octave, 0]))
+        self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, 0]))
 
 # this is the thing that gets midi events and sends them to the other place in a pickle
-class midiclient(client):
+class mididevclient(client):
     def __init__(self, ip, port, desc='input'):
         client.__init__(self, ip, port)
         pm.init()
