@@ -9,6 +9,14 @@ no protocol, no police
 ![server example](./img/s.jpg)
 ![client example](./img/c.jpg)
 
+# Midi Server
+
+```
+import midi_client_server
+s=midi_client_server.midiserver('',12345,'u2midi')
+s.stop()
+```
+
 # Midi Generating Client
 
 Attaches to (already running server)
@@ -19,6 +27,9 @@ c=midi_client_server.midigenclient('192.168.1.76',12345)
 c.noteon(65,50)
 c.noteoff(65)
 ```
+
+These two seem to be OK together
+
 
 # Flask Piano
 
@@ -38,4 +49,5 @@ f.noteoff_callback=off
 f.run()
 ```
 
-Results are very underwhelming at the moment
+Results are very underwhelming at the moment, probably socket comms too slow for socketio
+
