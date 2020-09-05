@@ -14,7 +14,9 @@ class midigenclient(client):
         self.working = False
         self.mthread.join()
     def noteon(self, note, vel=100):
-        self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, vel]))
+        p=pickle.dumps([0x90, note + self.transpose + 12 * self.octave, vel])
+        self.sendall(p)
+        print(p)
     def noteoff(self, note):
         self.sendall(pickle.dumps([0x80, note + self.transpose + 12 * self.octave, 0]))
         self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, 0]))
@@ -54,6 +56,7 @@ class midiserver(server):
             raise Exception('no device named {} anywhere probably'.format(desc))
         self.device = pm.Output(self.device_num)
     def msg_action(self, r):
+        print(r)
         data = pickle.loads(r)
         self.device.write(data)
     def cleanup(self):
