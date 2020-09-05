@@ -1,4 +1,5 @@
 from threading import Thread
+import time
 import pygame.midi as pm
 import pickle
 from client_server import client, server
@@ -14,12 +15,12 @@ class midigenclient(client):
         self.working = False
         self.mthread.join()
     def noteon(self, note, vel=100):
-        p=pickle.dumps([0x90, note + self.transpose + 12 * self.octave, vel])
+        p=pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, vel],time.time()]])
         self.sendall(p)
         print(p)
     def noteoff(self, note):
-        self.sendall(pickle.dumps([0x80, note + self.transpose + 12 * self.octave, 0]))
-        self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, 0]))
+        self.sendall(pickle.dumps([[[0x80, note + self.transpose + 12 * self.octave, 0], time.time()]]))
+        self.sendall(pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, 0], time.time()]]))
 
 # this is the thing that gets midi events and sends them to the other place in a pickle
 class mididevclient(client):
