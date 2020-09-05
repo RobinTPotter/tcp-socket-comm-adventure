@@ -25,10 +25,9 @@ class common(abc.ABC):
                 r = self.s.recv(1024)
             except:
                 pass
-            #print('recvd')
-        self.msg_action(r)
+            if len(r)>0:  self.msg_action(r)
     def msg_action(self,r):
-        if len(r): print(r)
+        print(r)
     def stop(self):
         self.working = False
         self.s.close()
