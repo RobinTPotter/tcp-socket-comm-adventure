@@ -42,6 +42,8 @@ class client(common):
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((ip,port))
         self.s.setblocking(0)
+    def cleanup(self):
+        pass
 
 class server(common):    
     def init(self, ip, port):
