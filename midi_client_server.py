@@ -5,7 +5,7 @@ from client_server import client, server
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 # this then generates (pygame) midi events, can be used as a callback for the flask_piano
-class midigenclient(client):
+class MidiGenClient(client):
     def __init__(self, ip, port):
         client.__init__(self, ip, port)
         self.transpose = 0
@@ -20,7 +20,7 @@ class midigenclient(client):
         self.sendall(pickle.dumps([0x90, note + self.transpose + 12 * self.octave, 0]))
 
 # this is the thing that gets midi events and sends them to the other place in a pickle
-class mididevclient(client):
+class MidiDevClient(client):
     def __init__(self, ip, port, desc='input'):
         client.__init__(self, ip, port)
         pm.init()
@@ -44,7 +44,7 @@ class mididevclient(client):
         self.device.close()
 
 # this is the thing that expects midi events in a pickle and sends to fluidynth
-class midiserver(server):
+class MidiServer(server):
     def __init__(self, ip, port, desc='synth'):
         server.__init__(self, ip, port)
         pm.init()
