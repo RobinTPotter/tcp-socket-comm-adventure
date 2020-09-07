@@ -2,7 +2,7 @@ import socket
 import threading
 import abc
 
-class common(abc.ABC):    
+class Common(abc.ABC):    
     def __init__(self, ip, port=12345):            
         self.working = True
         self.init(ip, port)
@@ -25,10 +25,9 @@ class common(abc.ABC):
                 r = self.s.recv(1024)
             except:
                 pass
-            #print('recvd')
-        self.msg_action(r)
+            if len(r)>0: self.msg_action(r)
     def msg_action(self,r):
-        if len(r): print(r)
+        print(r)
     def stop(self):
         self.working = False
         self.s.close()
@@ -38,13 +37,15 @@ class common(abc.ABC):
     def sendall(self, msg):
         self.s.sendall(msg)
     
-class client(common):    
+class Client(Common):    
     def init(self, ip, port):
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((ip,port))
         self.s.setblocking(0)
+    def cleanup(self):
+        pass
 
-class server(common):    
+class Server(Common):    
     def init(self, ip, port):
         if ip==None: ip=''
         self.srv=socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -13,6 +13,44 @@ no protocol, no police
 
 ![client example](./img/c.jpg)
 
-# midi_client_server.py
+# Midi Server
 
-# flask_piano.py
+```
+import midi_client_server
+s=midi_client_server.MidiServer('',12345,'u2midi')
+s.stop()
+```
+
+# Midi Generating Client
+
+Attaches to (already running server)
+
+```
+import midi_client_server
+c=midi_client_server.MidiGenClient('192.168.1.76',12345)
+c.noteon(65,50)
+c.noteoff(65)
+```
+
+These two seem to be OK together
+
+
+# Flask Piano
+
+Web page keyboard at port 5000, use callback functions to attach to midigenclient:
+
+```
+import flask_piano
+f=flask_piano.FlaskPiano()
+
+def on(data):
+ c.noteon(int(data['data']),50)
+def off(data):
+ c.noteoff(int(data['data']))
+
+f.noteon_callback=on
+f.noteoff_callback=off
+f.run()
+```
+
+Results are very underwhelming at the moment, probably socket comms too slow for socketio
