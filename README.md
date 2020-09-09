@@ -17,7 +17,9 @@ no protocol, no police
 
 ```
 import midi_client_server
+# connect to Output device containing 'u2midi' in pygame midi device description
 s=midi_client_server.MidiServer('',12345,'u2midi')
+# .. do things
 s.stop()
 ```
 
@@ -30,6 +32,7 @@ import midi_client_server
 c=midi_client_server.MidiGenClient('192.168.1.76',12345)
 c.noteon(65,50)
 c.noteoff(65)
+c.stop()
 ```
 
 These two seem to be OK together

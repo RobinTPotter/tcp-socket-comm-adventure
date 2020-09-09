@@ -12,8 +12,11 @@ class FlaskPiano():
         self.socketio.on_event('hello', self.hello)
         self.socketio.on_event('noteon', self.noteon)
         self.socketio.on_event('noteoff', self.noteoff)
+        self.socketio.on_event('oct_up', self.oct_up)
+        self.socketio.on_event('oct_down', self.oct_down)        
         self.noteon_callback = None
         self.noteoff_callback = None
+        self.transpose = 0
 
     def run(self, host='0.0.0.0'):
         """run the webserver
@@ -49,6 +52,12 @@ class FlaskPiano():
         if self.noteoff_callback==None: print(data)
         else: self.noteoff_callback(data)
 
+    def oct_up(self, data):
+        self.transpose += 12
+
+    def oct_down(self, data):
+        self.transpose -= 12
+
     def index(self):
         """the page revealing piano notes
         """
@@ -56,9 +65,9 @@ class FlaskPiano():
         keycodes = [65,66,67,68,69,70,71,72,73,74,75,76,77]
         keycolours = [0,1,0,1,0,0,1,0,1,0,1,0,0]
         keys = [a for a in zip(keycodes, keycolours, range(len(keycolours)))]
-        keys = ''.join(["<div style=\"position:absolute; left:"+ str((k[2]*60)) +"\" class=\""+ ('w' if k[1]==0 else 'b') +"\" ontouchstart=\"down(event)\" ontouchend=\"up(event)\" onmousedown=\"down(event)\" onmouseup=\"up(event)\">"+ str(k[0]) +"</div>" for k in keys])
+        keys = ''.join(["<div style=\"position:absolute; left:"+ str((k[2]*60)) +"\" class=\""+ ('w' if k[1]==0 else 'b') +"\" ontouchstart=\"down(event)\" ontouchend=\"up(event)\" onmousedown=\"down(event)\" onmouseup=\"up(event)\">"+ str(k[0] + self.transpose) +"</div>" for k in keys])
         return """<html onselectstart='return false;'>
-            <style>.w,.b {width:60px; height:60px; border: 1px solid black }
+            <style>.w,.b,.btn {width:60px; height:60px; border: 1px solid black }
             .w { background-color: white}
             .b { background-color: black}
             </style>
@@ -72,6 +81,8 @@ class FlaskPiano():
                 });
             </script>
             """ + keys + """
+            <div style="position:absolute; top:80px; left:10px" class="btn" ontouchstart="oct_up_down(event)" ontouchend="oct_up_up(event)" onmousedown="oct_up_down(event)" onmouseup="oct_up_up(event)">O+</div>
+            <div style="position:absolute; top:80px; left:70px" class="btn" ontouchstart="oct_down_down(event)" ontouchend="oct_down_up(event)" onmousedown="oct_down_down(event)" onmouseup="oct_down_up(event)">O-</div>
             <script>
             function down(e) {
             e.srcElement.style.backgroundColor = "red" 
@@ -82,6 +93,26 @@ class FlaskPiano():
             if (e.srcElement.classList.contains('w')) col = "white"
             e.srcElement.style.backgroundColor = col
             socket.emit('noteoff', {data: e.srcElement.innerText })
+            }
+            function oct_up_down(e) {
+            e.srcElement.style.backgroundColor = "red" 
+            socket.emit('oct_up', {data: e.srcElement.innerText })
+            }
+            function oct_up_up(e) {
+            e.srcElement.style.backgroundColor = "white"
+            setTimeout(function() {
+              location.reload()
+            }, 200)
+            }
+            function oct_down_down(e) {
+            e.srcElement.style.backgroundColor = "red" 
+            socket.emit('oct_down', {data: e.srcElement.innerText })
+            }
+            function oct_down_up(e) {
+            e.srcElement.style.backgroundColor = "white"
+            setTimeout(function() {
+              location.reload()
+            }, 200)
             }
             </script>
             </body></html>
