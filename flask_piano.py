@@ -53,19 +53,25 @@ class FlaskPiano():
         else: self.noteoff_callback(data)
 
     def oct_up(self, data):
+        """Set the transpose value + 12."""
         self.transpose += 12
 
     def oct_down(self, data):
+        """Set the transpose value - 12."""
         self.transpose -= 12
 
     def index(self):
-        """the page revealing piano notes
+        """the page revealing piano notes, also some buttons, buttons are
+        drawn with their current values, taking into account the transpose
+        value
         """
 
         keycodes = [65,66,67,68,69,70,71,72,73,74,75,76,77]
         keycolours = [0,1,0,1,0,0,1,0,1,0,1,0,0]
         keys = [a for a in zip(keycodes, keycolours, range(len(keycolours)))]
-        keys = ''.join(["<div style=\"position:absolute; left:"+ str((k[2]*60)) +"\" class=\""+ ('w' if k[1]==0 else 'b') +"\" ontouchstart=\"down(event)\" ontouchend=\"up(event)\" onmousedown=\"down(event)\" onmouseup=\"up(event)\">"+ str(k[0] + self.transpose) +"</div>" for k in keys])
+        keys = ''.join(["<div style=\"position:absolute; left:" + \
+            str((k[2]*60)) + "\" class=\""+ ('w' if k[1]==0 else 'b') + \
+            "\" ontouchstart=\"down(event)\" ontouchend=\"up(event)\" onmousedown=\"down(event)\" onmouseup=\"up(event)\">"+ str(k[0] + self.transpose) +"</div>" for k in keys])
         return """<html onselectstart='return false;'>
             <style>.w,.b,.btn {width:60px; height:60px; border: 1px solid black }
             .w { background-color: white}

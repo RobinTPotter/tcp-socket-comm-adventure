@@ -15,12 +15,15 @@ class MidiGenClient(Client):
         self.working = False
         self.mthread.join()
     def noteon(self, note, vel=100):
-        p=pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, vel],time.time()]])
-        self.sendall(p)
+        #p=pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, vel],time.time()]])
+        #self.sendall(p)
+        self.sendall(bytes([0x90, note + self.transpose + 12 * self.octave, vel]))
         print(p)
     def noteoff(self, note):
-        self.sendall(pickle.dumps([[[0x80, note + self.transpose + 12 * self.octave, 0], time.time()]]))
-        self.sendall(pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, 0], time.time()]]))
+        #self.sendall(pickle.dumps([[[0x80, note + self.transpose + 12 * self.octave, 0], time.time()]]))
+        #self.sendall(pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, 0], time.time()]]))
+        self.sendall(bytes([0x80, note + self.transpose + 12 * self.octave]))
+        self.sendall(bytes([0x90, note + self.transpose + 12 * self.octave, 0]))
 
 # this is the thing that gets midi events and sends them to the other place in a pickle
 class MidiDevClient(Client):
@@ -39,7 +42,8 @@ class MidiDevClient(Client):
         while self.mworking:
             if self.device.poll():
                 data = self.device.read()
-                self.sendall(pickle.dumps(data))
+                print('disabled sendall {}'.format(data))
+                #self.sendall(pickle.dumps(data))
     def cleanup(self):
         Client.cleanup(self)
         self.mworking = False
@@ -58,8 +62,13 @@ class MidiServer(Server):
         self.device = pm.Output(self.device_num)
     def msg_action(self, r):
         print(r)
-        data = pickle.loads(r)
-        self.device.write(data)
+        #data = pickle.loads(r)
+        #self.device.write(data)
+        datas = [ord(d) for d in data]
+        if len(datas) == 1: self.device.write_event(datas[0])
+        elif len(datas) == 2: self.device.write_event(datas[0],datas[1])
+        elif len(datas) == 3: self.device.write_event(datas[0],datas[1],datas[2])
+        elif len(datas) == 4: self.device.write_event(datas[0],datas[1],datas[2],datas[3])
     def cleanup(self):
         Server.cleanup(self)
         self.device.close()
