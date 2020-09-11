@@ -31,7 +31,7 @@ class MidiDevClient(Client):
         Client.__init__(self, ip, port)
         pm.init()
         try:
-            self.device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower()][0]
+            self.device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower() and pm.get_device_info(c)[2]==1][0]
         except:
             raise Exception('no device named {} anywhere probably'.format(desc))
         self.device = Input(self.device_num)
@@ -56,7 +56,7 @@ class MidiServer(Server):
         Server.__init__(self, ip, port)
         pm.init()
         try:
-            self.device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower()][0]
+            self.device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower() and pm.get_device_info(c)[3]==1][0]
         except:
             raise Exception('no device named {} anywhere probably'.format(desc))
         self.device = pm.Output(self.device_num)
