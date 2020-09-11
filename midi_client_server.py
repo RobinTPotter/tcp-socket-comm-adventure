@@ -18,7 +18,7 @@ class MidiGenClient(Client):
         #p=pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, vel],time.time()]])
         #self.sendall(p)
         self.sendall(bytes([0x90, note + self.transpose + 12 * self.octave, vel]))
-        print(p)
+        #print(p)
     def noteoff(self, note):
         #self.sendall(pickle.dumps([[[0x80, note + self.transpose + 12 * self.octave, 0], time.time()]]))
         #self.sendall(pickle.dumps([[[0x90, note + self.transpose + 12 * self.octave, 0], time.time()]]))

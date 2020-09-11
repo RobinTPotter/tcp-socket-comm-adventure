@@ -33,16 +33,13 @@ for t in ticks:
 
 # play beautiful music
 
-for t in ticks:
-
-    print(t)
-    # could arpegiate!
-    
-    for nn in range(concurrent_notes):
-        c.noteon(t[0][c], t[1][c])
-    
-    sleep(0.05)
-    
-    for nn in range(concurrent_notes):
-        c.noteoff(t[0][c])
+def play(c):
+    for t in ticks:
+        print(t)
+        # could arpegiate!
+        for nn in range(concurrent_notes):
+            c.noteon(t[0][c], t[1][c])
+        sleep(0.05)
+        for nn in range(concurrent_notes):
+            c.noteoff(t[0][c])
 
