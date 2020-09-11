@@ -64,7 +64,7 @@ class MidiServer(Server):
         print(r)
         #data = pickle.loads(r)
         #self.device.write(data)
-        datas = [ord(d) for d in r]
+        datas = [d for d in r]
         if len(datas) == 1: self.device.write_event(datas[0])
         elif len(datas) == 2: self.device.write_event(datas[0],datas[1])
         elif len(datas) == 3: self.device.write_event(datas[0],datas[1],datas[2])
