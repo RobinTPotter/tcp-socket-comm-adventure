@@ -1,12 +1,14 @@
 # for generating the everlasting tone music
 
 from time import sleep
-
+TRANS = 12
+SLEEP = 0.05
+SLEEP_INT = 0.2
 max_vel = 60
 dur = 400
 wind_down = 300
-oct_span = 7
-concurrent_notes = 6
+oct_span = 5
+concurrent_notes = 3
 
 ticks = []
 
@@ -35,11 +37,11 @@ for t in ticks:
 
 def play(c):
     for t in ticks:
-        print(t)
+        #print(t)
         # could arpegiate!
         for nn in range(concurrent_notes):
-            c.noteon(t[0][c], t[1][c])
-        sleep(0.05)
-        for nn in range(concurrent_notes):
-            c.noteoff(t[0][c])
-
+            c.noteon(TRANS+t[0][nn], t[1][nn])
+            sleep(SLEEP)
+        #for nn in range(concurrent_notes):
+        #    c.noteoff(TRANS+t[0][nn])
+        sleep(SLEEP_INT)

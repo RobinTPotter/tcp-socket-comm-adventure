@@ -61,7 +61,7 @@ class MidiServer(Server):
             raise Exception('no device named {} anywhere probably'.format(desc))
         self.device = pm.Output(self.device_num)
     def msg_action(self, r):
-        print(r)
+        #print(r)
         #data = pickle.loads(r)
         #self.device.write(data)
         datas = [d for d in r]
