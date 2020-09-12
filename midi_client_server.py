@@ -65,10 +65,10 @@ class MidiServer(Server):
         #data = pickle.loads(r)
         #self.device.write(data)
         datas = [d for d in r]
-        if len(datas) == 1: self.device.write_event(datas[0])
-        elif len(datas) == 2: self.device.write_event(datas[0],datas[1])
-        elif len(datas) == 3: self.device.write_event(datas[0],datas[1],datas[2])
-        elif len(datas) == 4: self.device.write_event(datas[0],datas[1],datas[2],datas[3])
+        if len(datas) == 1: self.device.write_short(datas[0])
+        elif len(datas) == 2: self.device.write_short(datas[0],datas[1])
+        elif len(datas) == 3: self.device.write_short(datas[0],datas[1],datas[2])
+        elif len(datas) == 4: self.device.write_short(datas[0],datas[1],datas[2],datas[3])
     def cleanup(self):
         Server.cleanup(self)
         self.device.close()
