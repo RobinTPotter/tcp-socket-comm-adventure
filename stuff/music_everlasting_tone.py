@@ -45,3 +45,14 @@ def play(c):
         #for nn in range(concurrent_notes):
         #    c.noteoff(TRANS+t[0][nn])
         sleep(SLEEP_INT)
+
+import pygame.midi as pm
+pm.init()
+for d in [str(pm.get_device_info(c)[1]).lower() for c in range(pm.get_count()) if pm.get_device_info(c)[3]==1][0]]:
+    print(d)
+    
+desc = 'u2midi'
+device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower() and pm.get_device_info(c)[3]==1][0]
+device = pm.Output(device_num)
+
+play(device)
