@@ -2,13 +2,13 @@
 
 from time import sleep
 TRANS = 12
-SLEEP = 0.05
+SLEEP = 0.005
 SLEEP_INT = 0.2
-max_vel = 60
+max_vel = 20
 dur = 400
 wind_down = 300
-oct_span = 5
-concurrent_notes = 3
+oct_span = 6
+concurrent_notes = 4
 
 ticks = []
 
@@ -32,7 +32,8 @@ for t in ticks:
             if t[1][nn]==0: activated[nn] = 0
             if activated[nn]==0 and t[1][nn]>0: t[1][nn] = 0
 
-
+for t in ticks:
+    print(t)
 # play beautiful music
 
 def play(c):
@@ -40,17 +41,17 @@ def play(c):
         #print(t)
         # could arpegiate!
         for nn in range(concurrent_notes):
-            c.noteon(TRANS+t[0][nn], t[1][nn])
+            c.note_on(TRANS+t[0][nn], t[1][nn])
             sleep(SLEEP)
-        #for nn in range(concurrent_notes):
-        #    c.noteoff(TRANS+t[0][nn])
+        for nn in range(concurrent_notes):
+            c.note_off(TRANS+t[0][nn])
         sleep(SLEEP_INT)
 
 import pygame.midi as pm
 pm.init()
-for d in [str(pm.get_device_info(c)[1]).lower() for c in range(pm.get_count()) if pm.get_device_info(c)[3]==1][0]]:
-    print(d)
-    
+for c in [c for c in range(pm.get_count()) if pm.get_device_info(c)[3]==1]:
+    print(str(pm.get_device_info(c)[1]).lower(), pm.get_device_info(c))
+
 desc = 'u2midi'
 device_num = [c for c in range(pm.get_count()) if desc.lower() in str(pm.get_device_info(c)[1]).lower() and pm.get_device_info(c)[3]==1][0]
 device = pm.Output(device_num)
